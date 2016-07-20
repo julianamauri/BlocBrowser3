@@ -67,6 +67,8 @@
     }
 
     self.view = mainView;
+    
+    [self welcomeMessage];
 
 }
 
@@ -155,6 +157,7 @@
     [self updateButtonsAndTitle];
 }
 
+
 #pragma mark - Miscellaneous
 
 - (void) updateButtonsAndTitle {
@@ -205,5 +208,16 @@
     [self.reloadButton addTarget:self.webView action:@selector(reload) forControlEvents:UIControlEventTouchUpInside];
 }
 
+- (void) welcomeMessage {
+    UIAlertController* welcomeAlert = [UIAlertController alertControllerWithTitle:@"Hello"
+                                                                   message:@"This is a welcome message."
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
+                                                          handler:^(UIAlertAction * action) {}];
+    
+    [welcomeAlert addAction:defaultAction];
+    [self presentViewController:welcomeAlert animated:YES completion:nil];
+}
 
 @end
