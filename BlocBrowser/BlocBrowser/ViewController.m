@@ -108,13 +108,22 @@
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     [textField resignFirstResponder];
     
+    // Add Search Query
+    
     NSString *URLString = textField.text;
     
+    
+    if ([textField.text containsString:@" "] || ![textField.text containsString:@"."]) {
+        URLString = [NSString stringWithFormat:@"google.com/search?q=%@", [URLString stringByReplacingOccurrencesOfString:@" " withString:@"+"]];
+        
+    }
+
     NSURL *URL = [NSURL URLWithString:URLString];
     
     if (!URL.scheme) {
         // The user didn't type http: or https:
         URL = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@", URLString]];
+        
     }
     
     if (URL) {
