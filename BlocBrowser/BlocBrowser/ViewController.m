@@ -161,6 +161,11 @@
 }
 
 
+- (void) floatingToolbar:(AwesomeFloatingToolbar *)toolbar didTryToPinchWithScale:(CGFloat)scale {
+    
+}
+
+
 #pragma mark - Miscellaneous
 
 - (void) updateButtonsAndTitle {
