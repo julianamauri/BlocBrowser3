@@ -63,6 +63,8 @@
     self.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:self.activityIndicator];
     
+    self.awesomeToolbar.frame = CGRectMake(20, 100, 280, 60);
+    
 }
 
 - (void) viewWillLayoutSubviews {
@@ -76,8 +78,6 @@
     // Now, assign the frames
     self.textField.frame = CGRectMake(0, 0, width, itemHeight);
     self.webView.frame = CGRectMake(0, CGRectGetMaxY(self.textField.frame), width, browserHeight);
-
-    self.awesomeToolbar.frame = CGRectMake(20, 100, 280, 60);
     
 }
 
@@ -162,7 +162,11 @@
 
 
 - (void) floatingToolbar:(AwesomeFloatingToolbar *)toolbar didTryToPinchWithScale:(CGFloat)scale {
+    CGFloat changeHeight = toolbar.frame.size.height * scale;
+    CGFloat changeWidth = toolbar.frame.size.width * scale;
+    CGRect changeFrame = CGRectMake(toolbar.frame.origin.x, toolbar.frame.origin.y, changeWidth, changeHeight);
     
+    toolbar.frame = changeFrame;
 }
 
 

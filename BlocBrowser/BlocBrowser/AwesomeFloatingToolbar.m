@@ -17,6 +17,7 @@
 @property (nonatomic, strong) UITapGestureRecognizer *tapGesture;
 @property (nonatomic, strong) UIPanGestureRecognizer *panGesture;
 @property (nonatomic, strong) UIPinchGestureRecognizer *pinchGesture;
+@property (nonatomic, strong) UILongPressGestureRecognizer *longPressGesture;
 
 @end
 
@@ -29,7 +30,7 @@
     if (self) {
         
         // Save the titles, and set the 4 colors
-        self.currentTitles = titles;
+        //self.currentTitles = titles;
         self.colors = @[[UIColor colorWithRed:199/255.0 green:158/255.0 blue:203/255.0 alpha:1],
                         [UIColor colorWithRed:255/255.0 green:105/255.0 blue:97/255.0 alpha:1],
                         [UIColor colorWithRed:222/255.0 green:165/255.0 blue:164/255.0 alpha:1],
@@ -38,40 +39,52 @@
         NSMutableArray *labelsArray = [[NSMutableArray alloc] init];
         
         // Make the 4 labels
+        
         for (NSString *currentTitle in self.currentTitles) {
-            UILabel *label = [[UILabel alloc] init];
-            label.userInteractionEnabled = NO;
-            label.alpha = 0.25;
+            UIButton *button = [UIButton buttonWithType: UIButtonTypeSystem];
             
-            NSUInteger currentTitleIndex = [self.currentTitles indexOfObject:currentTitle]; // 0 through 3
-            NSString *titleForThisLabel = [self.currentTitles objectAtIndex:currentTitleIndex];
-            UIColor *colorForThisLabel = [self.colors objectAtIndex:currentTitleIndex];
             
-            label.textAlignment = NSTextAlignmentCenter;
-            label.font = [UIFont systemFontOfSize:10];
-            label.text = titleForThisLabel;
-            label.backgroundColor = colorForThisLabel;
-            label.textColor = [UIColor whiteColor];
             
-            [labelsArray addObject:label];
+           button.userInteractionEnabled = NO;
+           button.alpha = 0.25;
+            
+            
+            
+           NSUInteger currentTitleIndex = [self.currentTitles indexOfObject:currentTitle]; // 0 through 3
+           //NSString *titleForThisLabel = [self.currentTitles objectAtIndex:currentTitleIndex];
+           UIColor *colorForThisLabel = [self.colors objectAtIndex:currentTitleIndex];
+           
+        
+            //label.textAlignment = NSTextAlignmentCenter;
+            
+            
+            button.titleLabel.font = [UIFont systemFontOfSize:10];
+            button.backgroundColor = colorForThisLabel;
+            button.titleLabel.textColor = [UIColor whiteColor];
+            //label.textColor = [UIColor whiteColor];
+            
+            [labelsArray addObject:button];
         }
         
         self.labels = labelsArray;
         
         for (UILabel *thisLabel in self.labels) {
             [self addSubview:thisLabel];
-        }
+       }
         
         
-        self.tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapFired:)];
+        //self.tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapFired:)];
 
-        [self addGestureRecognizer:self.tapGesture];
+        //[self addGestureRecognizer:self.tapGesture];
         
         self.panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panFired:)];
         [self addGestureRecognizer:self.panGesture];
         
         self.pinchGesture = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(pinchFired:)];
         [self addGestureRecognizer:self.pinchGesture];
+        
+        self.longPressGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressFired:)];
+        [self addGestureRecognizer:self.longPressGesture];
     }
     
     return self;
@@ -107,13 +120,37 @@
 
 - (void) pinchFired:(UIPinchGestureRecognizer *)recognizer {
 
-    if (recognizer.state == UIGestureRecognizerStateBegan) {
+    if (recognizer.state == UIGestureRecognizerStateChanged) {
+        
+        CGFloat scale = recognizer.scale;
+        
+        NSLog(@"New scale: %.2f", scale);
         
         if ([self.delegate respondsToSelector:@selector(floatingToolbar:didTryToPinchWithScale:)]) {
+            [self.delegate floatingToolbar:self didTryToPinchWithScale:scale];
             
          }
+        
+        [recognizer setScale:1.0];
     }
 
+}
+
+- (void) longPressFired:(UILongPressGestureRecognizer *)recognizer {
+    NSMutableArray *changeColors = [NSMutableArray arrayWithCapacity:self.colors.count];
+    
+    changeColors[0] = self.colors[1];
+    changeColors[1] = self.colors[2];
+    changeColors[2] = self.colors[3];
+    changeColors[3] = self.colors[0];
+    
+    self.colors = changeColors;
+    
+    for (int i=0; i < self.labels.count; i++) {
+        UILabel *label = self.labels[i];
+        
+        label.backgroundColor = self.colors[i];
+    }
 }
 
 - (void) layoutSubviews {
