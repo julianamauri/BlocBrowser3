@@ -30,7 +30,7 @@
     if (self) {
         
         // Save the titles, and set the 4 colors
-        //self.currentTitles = titles;
+        self.currentTitles = titles;
         self.colors = @[[UIColor colorWithRed:199/255.0 green:158/255.0 blue:203/255.0 alpha:1],
                         [UIColor colorWithRed:255/255.0 green:105/255.0 blue:97/255.0 alpha:1],
                         [UIColor colorWithRed:222/255.0 green:165/255.0 blue:164/255.0 alpha:1],
@@ -45,14 +45,19 @@
             
             
             
-           button.userInteractionEnabled = NO;
+          // button.userInteractionEnabled = NO;
+            
+           
            button.alpha = 0.25;
             
             
             
            NSUInteger currentTitleIndex = [self.currentTitles indexOfObject:currentTitle]; // 0 through 3
-           //NSString *titleForThisLabel = [self.currentTitles objectAtIndex:currentTitleIndex];
+           NSString *titleForThisLabel = [self.currentTitles objectAtIndex:currentTitleIndex];
            UIColor *colorForThisLabel = [self.colors objectAtIndex:currentTitleIndex];
+            
+            [button setTitle:titleForThisLabel forState:UIControlStateNormal];
+            [button addTarget:self action:@selector(tapFired:) forControlEvents:UIControlEventTouchUpInside];
            
         
             //label.textAlignment = NSTextAlignmentCenter;
@@ -68,8 +73,8 @@
         
         self.labels = labelsArray;
         
-        for (UILabel *thisLabel in self.labels) {
-            [self addSubview:thisLabel];
+       for (UIButton *labels in self.labels) {
+            [self addSubview:labels];
        }
         
         
@@ -90,18 +95,23 @@
     return self;
 }
 
-- (void) tapFired:(UITapGestureRecognizer *)recognizer {
-    if (recognizer.state == UIGestureRecognizerStateRecognized) { // #3
-        CGPoint location = [recognizer locationInView:self]; // #4
-        UIView *tappedView = [self hitTest:location withEvent:nil]; // #5
+- (void) tapFired:(UIButton *)recognizer {
+    //if (recognizer.state == UIGestureRecognizerStateRecognized) { // #3
+    //CGPoint location = [recognizer locationInView:self]; // #4
+        //UIView *tappedView = [self hitTest:location withEvent:nil]; // #5
+      
+        //if ([self.labels containsObject:tappedView]) { // #6
+  //  NSString *title = recognizer.currentTitle;
+ 
         
-        if ([self.labels containsObject:tappedView]) { // #6
-            if ([self.delegate respondsToSelector:@selector(floatingToolbar:didSelectButtonWithTitle:)]) {
-                [self.delegate floatingToolbar:self didSelectButtonWithTitle:((UILabel *)tappedView).text];
-            }
-        }
+        NSLog(@"you clicked on button %@", recognizer.currentTitle);
+    
+        if ([self.delegate respondsToSelector:@selector(floatingToolbar:didSelectButtonWithTitle:)]) {
+    //[self.delegate floatingToolbar:didSelectButtonWithTitle:];
+                 }
+       // }
     }
-}
+//}
 
 - (void) panFired:(UIPanGestureRecognizer *)recognizer {
     if (recognizer.state == UIGestureRecognizerStateChanged) {
@@ -156,7 +166,7 @@
 - (void) layoutSubviews {
     // set the frames for the 4 labels
     
-    for (UILabel *thisLabel in self.labels) {
+    for (UIButton *thisLabel in self.labels) {
         NSUInteger currentLabelIndex = [self.labels indexOfObject:thisLabel];
         
         CGFloat labelHeight = CGRectGetHeight(self.bounds) / 2;
@@ -187,17 +197,19 @@
 
 #pragma mark - Touch Handling
 
-- (UILabel *) labelFromTouches:(NSSet *)touches withEvent:(UIEvent *)event {
-    UITouch *touch = [touches anyObject];
-    CGPoint location = [touch locationInView:self];
-    UIView *subview = [self hitTest:location withEvent:event];
+
+
+//- (UILabel *) labelFromTouches:(NSSet *)touches withEvent:(UIEvent *)event {
+    //UITouch *touch = [touches anyObject];
+    //CGPoint location = [touch locationInView:self];
+    //UIView *subview = [self hitTest:location withEvent:event];
     
-    if ([subview isKindOfClass:[UILabel class]]) {
-        return (UILabel *)subview;
-    } else {
-        return nil;
-    }
-}
+    //if ([subview isKindOfClass:[UILabel class]]) {
+       // return (UILabel *)subview;
+    //} else {
+   //     return nil;
+    //}
+//}
 
 
 #pragma mark - Button Enabling
@@ -206,10 +218,11 @@
     NSUInteger index = [self.currentTitles indexOfObject:title];
     
     if (index != NSNotFound) {
-        UILabel *label = [self.labels objectAtIndex:index];
-        label.userInteractionEnabled = enabled;
-        label.alpha = enabled ? 1.0 : 0.25;
-    }
+        UIButton *button = [self.labels objectAtIndex:index];
+        button.userInteractionEnabled = enabled;
+
+        button.alpha = enabled ? 1.0 : 0.25;
+   }
 }
 
 @end
