@@ -43,13 +43,7 @@
         for (NSString *currentTitle in self.currentTitles) {
             UIButton *button = [UIButton buttonWithType: UIButtonTypeSystem];
             
-            
-            
-          // button.userInteractionEnabled = NO;
-            
-           
            button.alpha = 0.25;
-            
             
             
            NSUInteger currentTitleIndex = [self.currentTitles indexOfObject:currentTitle]; // 0 through 3
@@ -58,15 +52,11 @@
             
             [button setTitle:titleForThisLabel forState:UIControlStateNormal];
             [button addTarget:self action:@selector(tapFired:) forControlEvents:UIControlEventTouchUpInside];
-           
-        
-            //label.textAlignment = NSTextAlignmentCenter;
             
             
             button.titleLabel.font = [UIFont systemFontOfSize:10];
             button.backgroundColor = colorForThisLabel;
             button.titleLabel.textColor = [UIColor whiteColor];
-            //label.textColor = [UIColor whiteColor];
             
             [labelsArray addObject:button];
         }
@@ -76,11 +66,6 @@
        for (UIButton *labels in self.labels) {
             [self addSubview:labels];
        }
-        
-        
-        //self.tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapFired:)];
-
-        //[self addGestureRecognizer:self.tapGesture];
         
         self.panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panFired:)];
         [self addGestureRecognizer:self.panGesture];
@@ -95,23 +80,13 @@
     return self;
 }
 
-- (void) tapFired:(UIButton *)recognizer {
-    //if (recognizer.state == UIGestureRecognizerStateRecognized) { // #3
-    //CGPoint location = [recognizer locationInView:self]; // #4
-        //UIView *tappedView = [self hitTest:location withEvent:nil]; // #5
-      
-        //if ([self.labels containsObject:tappedView]) { // #6
-  //  NSString *title = recognizer.currentTitle;
- 
-        
-        NSLog(@"you clicked on button %@", recognizer.currentTitle);
+- (void) tapFired:(UIButton *)button {
+        NSLog(@"you clicked on button %@", button.currentTitle);
     
         if ([self.delegate respondsToSelector:@selector(floatingToolbar:didSelectButtonWithTitle:)]) {
-    //[self.delegate floatingToolbar:didSelectButtonWithTitle:];
-                 }
-       // }
-    }
-//}
+            [self.delegate floatingToolbar:self didSelectButtonWithTitle:button.currentTitle];
+        }
+}
 
 - (void) panFired:(UIPanGestureRecognizer *)recognizer {
     if (recognizer.state == UIGestureRecognizerStateChanged) {
@@ -194,22 +169,6 @@
         thisLabel.frame = CGRectMake(labelX, labelY, labelWidth, labelHeight);
     }
 }
-
-#pragma mark - Touch Handling
-
-
-
-//- (UILabel *) labelFromTouches:(NSSet *)touches withEvent:(UIEvent *)event {
-    //UITouch *touch = [touches anyObject];
-    //CGPoint location = [touch locationInView:self];
-    //UIView *subview = [self hitTest:location withEvent:event];
-    
-    //if ([subview isKindOfClass:[UILabel class]]) {
-       // return (UILabel *)subview;
-    //} else {
-   //     return nil;
-    //}
-//}
 
 
 #pragma mark - Button Enabling
